@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace是DAO层的接口名称(接口必须存在，否则出错) -->
+ <mapper namespace="MyCloud.FileInfoDAO">
+      <!-- 管理员查找 -->
+     <select id="adminFind"  resultType="FileInfo">
+     select * from fileInfo
+     </select>
+     
+     <!-- 用户查找 -->
+     <select id="findById" parameterType="java.lang.String" resultType="FileInfo">
+     select * from fileInfo where fNo = #{0}  
+     </select>
+     
+     <!--查找ALL -->
+     <select id="findAll" parameterType="java.lang.String" resultType="FileInfo">
+     select * from fileInfo  where uNo = #{0}
+     </select>
+     
+     <!--查找ALL -->
+     <select id="findSearch" parameterType="java.lang.String" resultType="FileInfo">
+     select * from fileInfo  where uNo = #{0} and fName LIKE '%${1}%';
+     </select>
+     
+	<!-- 删除  -->  
+    <delete id="delFile" parameterType="java.lang.String">    
+        delete from fileInfo where fNo = #{0}    
+    </delete>
+    
+     
+     <!-- 文件名查重 -->
+     <select id="findByName" parameterType="java.lang.String" resultType="int">
+     select count(*) from fileInfo where fName = #{0}  
+     </select>
+     
+     <!-- 文件内容查重 -->
+     <select id="findByHash" parameterType="java.lang.String" resultType="int">
+     select count(*) from fileInfo where fHash = #{0}  
+     </select>
+     
+	 <!-- 文件总数 -->
+     <select id="findCount"  resultType="int">
+     select count(*) from fileInfo  
+     </select>
+     
+    <!-- 修改文件名 -->    
+    <update id="updateFile" parameterType="java.lang.String">    
+        update fileInfo set fName = #{0} 
+        where fName = #{1} and uNo = #{2}   
+    </update>
+    
+     <!-- 插入上传数据 -->
+     <insert id="addFile" parameterType="FileInfo">    
+        insert into fileInfo(fNo,uNo,fName,fHash,fPath,fDate)   
+        values(#{fNo}, #{uNo}, #{fName},#{fHash},#{fPath},#{fDate})    
+     </insert>
+     
+</mapper>

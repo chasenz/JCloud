@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration  
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-config.dtd">  
+<!-- 这是根标签  -->  
+<configuration>
+	<!-- 元素允许在主配置文件之外提供一个properties格式对应文件，从而使得主配置文件更加通用。这样对部署非常有用  -->  
+    <properties resource="mssql.properties"/>
+    <!-- 实体别名 -->
+    <typeAliases>
+    	<typeAlias alias="UserInfo" type="MyCloud.UserInfo"></typeAlias>
+    	<typeAlias alias="FileInfo" type="MyCloud.FileInfo"></typeAlias>
+    	<typeAlias alias="ShareFile" type="MyCloud.ShareFile"></typeAlias>
+    	<typeAlias alias="AdminInfo" type="MyCloud.AdminInfo"></typeAlias>
+    </typeAliases>
+	<!-- 配置数据源相关的信息  -->  
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC" />
+            <dataSource type="POOLED">
+            <!--<property name="driver" value="com.mysql.jdbc.Driver"/>
+             <property name="url" value="jdbc:mysql://localhost:3306/test?characterEncoding=UTF-8"/>
+            <property name="username" value="root"/>
+            <property name="password" value="christmas258@"/>-->
+            <property name="driver" value="${driver}" />
+                <property name="url" value="${url}" />
+                <property name="username" value="${username}" />
+                <property name="password" value="${password}" />
+            </dataSource>
+        </environment>
+    </environments>
+    <!-- 实体映射文件(DAO层) -->
+    <mappers>  
+        <mapper resource="MyCloud/UserInfo.xml" />
+        <mapper resource="MyCloud/FileInfo.xml" />
+        <mapper resource="MyCloud/ShareFile.xml" />
+        <mapper resource="MyCloud/AdminInfo.xml" />
+    </mappers> 
+</configuration>

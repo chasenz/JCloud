@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace是DAO层的接口名称(接口必须存在，否则出错) -->
+ <mapper namespace="MyCloud.UserInfoDAO">
+     <!-- 查找 -->
+     <select id="findById" parameterType="java.lang.String" resultType="UserInfo">
+     select * from userInfo where uName = #{0}  
+     </select>   
+     
+     <!-- 登录验证 -->
+     <select id="findUser" parameterType="java.lang.String" resultType="int">
+     select count(*) from userInfo where uName = #{0} and uPwd = #{1}
+     </select>
+     
+	 <!-- uNo查重 -->
+     <select id="findNo" parameterType="java.lang.String" resultType="int">
+     select count(*) from userInfo where uNo = #{0} 
+     </select>
+     
+    <!-- admin查数量 -->
+     <select id="adminFind"  resultType="int">
+     select count(*) from userInfo  
+     </select>
+     
+     <!-- 用户注册 -->
+     <insert id="addUser" parameterType="UserInfo">    
+        insert into userInfo(uNo,uName,uPwd)   
+        values(#{uNo}, #{uName}, #{uPwd})    
+     </insert>
+     
+    <!-- 修改密码 -->    
+    <update id="updatePwd" parameterType="java.lang.String">    
+        update userInfo set uPwd = #{0} 
+        where uName = #{1}   
+    </update>
+</mapper>
+     

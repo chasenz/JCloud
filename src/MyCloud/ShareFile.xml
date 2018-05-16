@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace是DAO层的接口名称(接口必须存在，否则出错) -->
+ <mapper namespace="MyCloud.ShareFileDAO">
+     <!-- 查找 -->
+     <select id="findById" parameterType="java.lang.String" resultType="ShareFile">
+     select * from shareFile where fNo = #{0}
+     </select>   
+     
+     <!-- 验证 -->
+     <select id="confirmShare" parameterType="java.lang.String" resultType="int">
+     select count(*) from shareFile where fNo = #{0} and fPwd = #{1}
+     </select>
+     
+	<!-- 删除  -->  
+    <delete id="delShare" parameterType="java.lang.String">    
+        delete from shareFile where fNo = #{0}    
+    </delete>
+     
+     <!-- 插入分享-->
+     <insert id="addShare" parameterType="ShareFile">    
+        insert into shareFile(fNo,fPwd)   
+        values(#{fNo}, #{fPwd})    
+     </insert>
+</mapper>
+     

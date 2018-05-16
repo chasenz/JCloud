@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop   
+        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd   
+        http://www.springframework.org/schema/beans   
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd   
+        http://www.springframework.org/schema/context   
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd   
+        http://www.springframework.org/schema/mvc   
+        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd   
+        http://www.springframework.org/schema/tx   
+        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+    <!--加载配置文件 -->
+    <context:property-placeholder location="classpath:mssql.properties"/>
+	<!-- SpringMVC注解版 -->
+	<mvc:annotation-driven />
+	<!-- 自动扫描配置,Controller,Service等 -->
+	<context:component-scan base-package="myMVC" />
+	<!-- 数据源dataSource -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+    	destroy-method="close">
+	    <!-- Connection Info -->
+	    <property name="driverClassName" value="${driver}" />
+	    <property name="url" value="${url}" />
+	    <property name="username" value="${username}" />
+	    <property name="password" value="${password}" />
+	</bean>
+	
+	<!-- SpringMVC View自动配置 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+	</bean>
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="configLocation" value="classpath:mybatis.xml"></property>
+	</bean>
+	<!-- 配置MyBatis的DAO层 -->
+	<bean id="userInfoDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="MyCloud.UserInfoDAO"></property>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	<bean id="fileInfoDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="MyCloud.FileInfoDAO"></property>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	<bean id="shareFileDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="MyCloud.ShareFileDAO"></property>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	<bean id="adminInfoDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="MyCloud.AdminInfoDAO"></property>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+    <!-- 对静态资源进行解析 -->  
+    <!-- 解决静态资源访问 -->  
+    <mvc:default-servlet-handler/>
+    <mvc:resources location="resource/js/" mapping="resource/js/**" /> 
+    <mvc:resources location="resource/css/" mapping="resource/css/**" />
+    <mvc:resources location="resource/img/" mapping="resource/img/**" /> 
+    <mvc:resources location="resource/upload/" mapping="resource/upload/**" /> 
+    <!-- 上传文件的设置 ，maxUploadSize=-1，表示无穷大。uploadTempDir为上传的临时目录 -->  
+    <bean id="multipartResolver" 
+    	class="org.springframework.web.multipart.commons.CommonsMultipartResolver"    
+        p:defaultEncoding="UTF-8"    
+        p:maxUploadSize="5400000"    
+        p:uploadTempDir="upload/temp">
+    </bean>
+    <mvc:interceptors>  
+    <mvc:interceptor>  
+        <!-- 匹配的是url路径， 如果不配置或/**,将拦截所有的Controller -->  
+ 			<mvc:mapping path="/settings"/>
+ 			<mvc:mapping path="/home"/>
+ 			<mvc:mapping path="/user-home"/>
+ 			<mvc:mapping path="/user-upload"/>
+ 			<mvc:mapping path="/profile"/>
+ 			<mvc:mapping path="/user-share"/>
+ 			<mvc:mapping path="/user-rename"/>
+        <bean class="com.cloud.interceptor.CommonInterceptor"></bean>  
+    </mvc:interceptor>  
+    <!-- 当设置多个拦截器时，先按顺序调用preHandle方法，然后逆序调用每个拦截器的postHandle和afterCompletion方法 -->  
+</mvc:interceptors>  
+</beans>
